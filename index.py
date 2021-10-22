@@ -1,7 +1,7 @@
 import requests
 import push
 import os
-# import re
+import re
 import time
 from API import video_info_url, BiliBili_login_url, live_broadcast_url, Comics, Comics_info, recommend, video_Share, add_coin, video_click, video_heartbeat
 '''
@@ -16,16 +16,16 @@ from API import video_info_url, BiliBili_login_url, live_broadcast_url, Comics, 
 '''
 # Cookies
 Cookies = os.getenv('Cookies').split(',')
-csrf = os.getenv('csrf').split(',')
-uid = os.getenv('uid').split(',')
-sid = os.getenv('sid').split(',')
+# csrf = os.getenv('csrf').split(',')
+# uid = os.getenv('uid').split(',')
+# sid = os.getenv('sid').split(',')
 
 # 正则好像有点 bug (╯▔皿▔)╯
-# csrf, uid, sid = [], [], []
-# for i in Cookies:
-#     csrf.append(re.findall('(?<=bili_jct=)(.+?);', i)[0])
-#     uid.append(re.findall('(?<=DedeUserID=)(.+?);', i)[0])
-#     sid.append(re.findall('(?<=sid=)(.+)', i)[0])
+csrf, uid, sid = [], [], []
+for i in Cookies:
+    csrf.append(re.findall('(?<=bili_jct=)(.+?);', i)[0])
+    uid.append(re.findall('(?<=DedeUserID=)(.+?);', i)[0])
+    sid.append(re.findall('(?<=sid=)(.+?);', i)[0])
 
 # UA
 UserAgent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/94.0.4606.81'
