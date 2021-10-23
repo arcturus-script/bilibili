@@ -20,7 +20,6 @@ csrf = os.getenv('csrf').split(',')
 uid = os.getenv('uid').split(',')
 sid = os.getenv('sid').split(',')
 
-
 # 正则好像有点 bug (╯▔皿▔)╯
 # csrf, uid, sid = [], [], []
 # for i in Cookies:
@@ -81,9 +80,12 @@ def live_broadcast_checkin(headers):
     if rep['code'] == 0:
         # 签到成功
         data = rep['data']
+        print('直播签到成功🎉🎉')
+        print('获得奖励:%s' % data['text'])
         info = {'raward': data['text'], 'specialText': data['specialText']}
         return {'status': True, 'info': info}
     else:
+        print('直播签到失败,因为%s' % rep['message'])
         return {'status': False, 'message': rep['message']}
 
 
@@ -92,6 +94,7 @@ def comics_checkin(headers):
     data = {'platform': 'android'}
     rep = requests.post(Comics, headers=headers, data=data).json()
     if rep['code'] == 0:
+        print('漫画签到成功🎉🎉')
         p = comics_checkin_info(Cookies)
         if p['status']:
             return {
@@ -100,6 +103,7 @@ def comics_checkin(headers):
                 'day_count': p['day_count']
             }
     elif rep['code'] == 'invalid_argument':
+        print('漫画签到失败,因为重复签到了')
         return {'status': False, 'message': '重复签到啦'}
 
 
@@ -149,12 +153,15 @@ def give_coin(p, want_coin_num, headers, coinnum=1, select_like=0):
             print(rep)
             if rep['code'] == 0:
                 # 投币成功
+                print('给[%s]投币成功🎉🎉' % item['title'])
                 list.update({index: {'status': True, 'title': item['title']}})
                 has_coin_num = has_coin_num + 1  # 投币次数加 1
             else:
                 # 投币失败
+                print('给[%s]投币失败😥😥' % item['title'])
                 list.update({index: {'status': False, 'title': item['title']}})
         else:
+            print('投币完成,正在退出')
             break
     return list
 
@@ -168,8 +175,10 @@ def share_video(p, headers):
         if rep['code'] == 0:
             # 如果分享成功,退出循环
             # 并返回分享的视频名
+            print('分享视频[%s]成功🎉🎉' % item['title'])
             return {'status': True, 'msg': item['title']}
     # 循环结束都没分享成功,返回分享失败
+    print('分享视频失败😥😥')
     return {'status': False}
 
 
@@ -219,13 +228,15 @@ def watch(bvid, headers):
                                     headers=headers).json()
 
                 if rep['code'] == 0:
+                    print('观看视频成功🎉🎉')
                     return True
+        print('观看视频失败惹😥😥')
         return False
 
 
 def start():
     push_type = os.getenv('push_type', '0')
-    want_watch = os.getenv('is_watch', '').split(',')
+    want_watch = os.getenv('want_watch', '').split(',')
     want_coin_num = os.getenv('want_coin_num', '').split(',')
     want_share_num = os.getenv('want_share_num', '').split(',')
     want_comics_checkin = os.getenv('want_comics_checkin', '').split(',')
@@ -244,24 +255,32 @@ def start():
         # 获取用户信息
         user = get_user_info(headers)
         if user['status']:
+            userInfo = user['userInfo']
+            content = '等级：lv%d\n硬币：%d\n经验：%s\n' % (
+                userInfo['level'], userInfo['coins'], userInfo['level_exp'])
+            print(content)
             # 配置需观看的视频 BV 号
             bvid = os.getenv('bvid', 'BV1if4y1g7Qp')
-            if bvid and want_watch == '1':
+            if bvid and want_watch[cindex] == '1':
                 # 如果 bvid 存在,且 is_watch 不是 '0'
                 # 说明想要看视频
+                print('正在观看视频...')
                 is_watch = watch(bvid, headers)
             else:
+                print('不进行观看...')
                 is_watch = False
             # 获取 50 个推荐视频
             p = video_suggest(50)
             if p['status']:
+                print('获取 50 个视频成功🎉🎉')
                 # 投币,默认不投币
                 try:
                     wcn = int(want_coin_num[cindex])
+                    print('今日欲投 %d 个硬币' % wcn)
                 except (IndexError, ValueError):
                     wcn = 0
+                    print('今日欲投 %d 个硬币' % wcn)
                 coin_list = give_coin(p, wcn, headers)
-
                 # 随机分享视频,默认不分享视频
                 try:
                     wsn = want_share_num[cindex]
@@ -270,10 +289,13 @@ def start():
                 if wsn == '1':
                     # 如果 want_share_num 是 '1'
                     # 说明需要分享
+                    print('正在分享视频...')
                     is_share = share_video(p, headers)
                 else:
+                    print('今日不分享视频...')
                     is_share = {'status': False}
             else:
+                print('获取视频失败😥😥')
                 is_share = {'status': False}
                 coin_list = {}
 
@@ -283,8 +305,10 @@ def start():
             except IndexError:
                 wcc = '0'
             if wcc == '1':
+                print('正在进行漫画签到...')
                 cm = comics_checkin(headers)
             else:
+                print('不启用漫画签到...')
                 cm = {'status': False, 'message': '未启用'}
 
             # 直播签到,默认不签到
@@ -293,44 +317,42 @@ def start():
             except IndexError:
                 wlc = '0'
             if wlc == '1':
+                print('正在尝试直播签到...')
                 lb = live_broadcast_checkin(headers)
             else:
+                print('今日不进行直播签到...')
                 lb = {'status': False, 'message': '未启用'}
 
             # 开始推送
-            userInfo = user['userInfo']
-            content = '等级：lv%d\n硬币：%d\n经验：%s' % (
-                userInfo['level'], userInfo['coins'], userInfo['level_exp'])
             if is_watch:
-                content = content + '\n\n观看视频：完成\n'
+                content = content + '\n观看视频：完成'
 
             if is_share['status']:
-                content = content + '分享视频[%s]：完成\n' % is_share['msg']
+                content = content + '\n分享视频[%s]：完成' % is_share['msg']
 
             if len(coin_list) != 0:
                 for i in coin_list.values():
                     if i['status']:
-                        content = content + '给视频[%s]投币：成功\n' % i['title']
+                        content = content + '\n给视频[%s]投币：成功' % i['title']
                     else:
-                        content = content + '给视频[%s]投币：失败\n' % i['title']
+                        content = content + '\n给视频[%s]投币：失败' % i['title']
             if cm['status']:
-                content = content + '漫画：%s\n连续签到：%d天\n' % (cm['message'],
-                                                             cm['day_count'])
+                content = content + '\n漫画：%s\n连续签到：%d天' % (cm['message'],
+                                                           cm['day_count'])
             else:
-                content = content + '漫画未签到,因为：%s\n' % cm['message']
+                content = content + '\n漫画未签到,因为：%s' % cm['message']
 
             if lb['status']:
                 lb_info = lb['info']
-                content = content + '直播签到成功\n今日奖励：%s\n其他：%s' % (
+                content = content + '\n直播签到成功\n今日奖励：%s\n其他：%s' % (
                     lb_info['raward'], lb_info['specialText'])
             else:
-                content = content + '直播未签到,因为：%s' % lb['message']
+                content = content + '\n直播未签到,因为：%s' % lb['message']
 
-            print(content)
             if push_type == '1':
                 qiye_push_msg(content, userInfo['name'])
             else:
-                msg.append('##%s\n%s\n' % (userInfo['name'], content))
+                msg.append('## %s\n%s\n' % (userInfo['name'], content))
         else:
             print('Cookies 失效啦')
             if push_type == '1':
