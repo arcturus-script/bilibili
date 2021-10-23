@@ -267,7 +267,7 @@ def start():
                 # 如果 bvid 存在,且 is_watch 不是 '0'
                 # 说明想要看视频
                 print('正在观看视频...')
-                is_watch = watch(bvid, headers)
+                is_watch = watch(bvid, headers, uid[cindex], csrf[cindex])
             else:
                 print('不进行观看...')
                 is_watch = False
