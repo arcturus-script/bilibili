@@ -118,19 +118,16 @@ def comics_checkin_info(headers):
 
 # 获取推荐视频列表
 def video_suggest(num):
-    params = {
-        'ps': num,  # 获取 num 个视频
-        'pn': 1
-    }
+    params = {'tid': 23, 'order': 'new'}
     rep = requests.get(recommend, params=params).json()
     if rep['code'] == 0:
-        video_list = {}
-        vl = rep['data']['list']
-        for index, item in enumerate(vl):
+        vdict = {}
+        vlist = rep['list']
+        for index, item in enumerate(vlist):
             # 将视频主要信息保存到字典里
-            i = {'aid': item['aid'], 'title': item['title']}
-            video_list.update({index: i})
-        return {'status': True, 'video_list': video_list}
+            v = {'aid': item['aid'], 'title': item['title']}
+            vdict.update({index: v})
+        return {'status': True, 'video_list': vdict}
     else:
         return {'status': False, 'msg': '获取推荐视频失败惹😥'}
 

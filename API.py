@@ -9,7 +9,7 @@ Comics = 'https://manga.bilibili.com/twirp/activity.v1.Activity/ClockIn'
 # bilibili 漫画签到信息
 Comics_info = 'https://manga.bilibili.com/twirp/activity.v1.Activity/GetClockInInfo'
 # 获取视频推荐
-recommend = 'https://api.bilibili.com/x/web-interface/popular'
+recommend = 'http://api.bilibili.cn/recommend'
 # 客户端分享视频
 video_Share = 'https://api.bilibili.com/x/web-interface/share/add'
 # 投币
