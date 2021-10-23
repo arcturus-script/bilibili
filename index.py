@@ -136,7 +136,7 @@ def video_suggest(num):
 
 
 # 投币
-def give_coin(p, want_coin_num, headers, coinnum=1, select_like=0):
+def give_coin(p, want_coin_num, headers, csrf, coinnum=1, select_like=0):
     has_coin_num = 0  # 已经投币次数
     list = {}
     for index, item in enumerate(p['video_list'].values()):
@@ -158,7 +158,7 @@ def give_coin(p, want_coin_num, headers, coinnum=1, select_like=0):
                 has_coin_num = has_coin_num + 1  # 投币次数加 1
             else:
                 # 投币失败
-                print('给[%s]投币失败😥😥' % item['title'])
+                print('给[%s]投币失败😥😥,因为%s' % item['title'],rep['message'])
                 list.update({index: {'status': False, 'title': item['title']}})
         else:
             print('投币完成,正在退出')
@@ -167,7 +167,7 @@ def give_coin(p, want_coin_num, headers, coinnum=1, select_like=0):
 
 
 # 分享视频
-def share_video(p, headers):
+def share_video(p, headers, csrf):
     for item in p['video_list'].values():
         # 分享视频
         data = {'aid': item['aid'], 'csrf': csrf}
@@ -177,13 +177,15 @@ def share_video(p, headers):
             # 并返回分享的视频名
             print('分享视频[%s]成功🎉🎉' % item['title'])
             return {'status': True, 'msg': item['title']}
+        else:
+            print('分享视频[%s]失败,因为%s' % (item['title'], rep['message']))
     # 循环结束都没分享成功,返回分享失败
     print('分享视频失败😥😥')
     return {'status': False}
 
 
 # 每日看视频
-def watch(bvid, headers):
+def watch(bvid, headers, uid, csrf):
     p = get_video_info(bvid)
     # 获取视频信息成功
     if p['status']:
@@ -280,7 +282,7 @@ def start():
                 except (IndexError, ValueError):
                     wcn = 0
                     print('今日欲投 %d 个硬币' % wcn)
-                coin_list = give_coin(p, wcn, headers)
+                coin_list = give_coin(p, wcn, headers, csrf[cindex])
                 # 随机分享视频,默认不分享视频
                 try:
                     wsn = want_share_num[cindex]
@@ -290,7 +292,7 @@ def start():
                     # 如果 want_share_num 是 '1'
                     # 说明需要分享
                     print('正在分享视频...')
-                    is_share = share_video(p, headers)
+                    is_share = share_video(p, headers, csrf[cindex])
                 else:
                     print('今日不分享视频...')
                     is_share = {'status': False}
