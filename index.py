@@ -150,7 +150,6 @@ def give_coin(p, want_coin_num, headers, csrf, coinnum=1, select_like=0):
         # 当已投币数超过想投币数时退出
         if has_coin_num < want_coin_num:
             rep = requests.post(add_coin, headers=headers, data=data).json()
-            print(rep)
             if rep['code'] == 0:
                 # 投币成功
                 print('给[%s]投币成功🎉🎉' % item['title'])
@@ -158,7 +157,7 @@ def give_coin(p, want_coin_num, headers, csrf, coinnum=1, select_like=0):
                 has_coin_num = has_coin_num + 1  # 投币次数加 1
             else:
                 # 投币失败
-                print('给[%s]投币失败😥😥,因为%s' % item['title'],rep['message'])
+                print('给[%s]投币失败😥😥,因为%s' % (item['title'],rep['message']))
                 list.update({index: {'status': False, 'title': item['title']}})
         else:
             print('投币完成,正在退出')
