@@ -95,7 +95,8 @@ def comics_checkin(headers):
     rep = requests.post(Comics, headers=headers, data=data).json()
     if rep['code'] == 0:
         print('漫画签到成功🎉🎉')
-        p = comics_checkin_info(Cookies)
+        p = comics_checkin_info(headers)
+        print('已经连续签到%d天' % p['day_count'])
         if p['status']:
             return {
                 'status': True,
@@ -104,7 +105,7 @@ def comics_checkin(headers):
             }
     elif rep['code'] == 'invalid_argument':
         print('漫画签到失败,因为重复签到了')
-        return {'status': False, 'message': '重复签到啦'}
+        return {'status': False, 'message': rep['message']}
 
 
 # 查看漫画签到信息
