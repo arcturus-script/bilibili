@@ -1,6 +1,10 @@
 <div align="center">
 <h1>BiliBili签到-腾讯云函数</h1>
+
+[![GitHub issues](https://img.shields.io/github/issues/ICE99125/BiliBili_Checkin?color=red&style=for-the-badge)](https://github.com/ICE99125/BiliBili_Checkin/issues)  [![GitHub forks](https://img.shields.io/github/forks/ICE99125/BiliBili_Checkin?style=for-the-badge)](https://github.com/ICE99125/BiliBili_Checkin/network)  [![GitHub stars](https://img.shields.io/github/stars/ICE99125/BiliBili_Checkin?style=for-the-badge)](https://github.com/ICE99125/BiliBili_Checkin/stargazers)  [![Python](https://img.shields.io/badge/python-3.6%2B-orange?style=for-the-badge)](https://www.python.org/)
 </div>
+
+
 ### 实现功能
 
 - [x] 获取用户信息
