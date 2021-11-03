@@ -3,7 +3,9 @@ import push
 import os
 import re
 import time
-from API import video_info_url, BiliBili_login_url, live_broadcast_url, Comics, Comics_info, recommend, video_Share, add_coin, video_click, video_heartbeat
+from API import video_info_url, BiliBili_login_url, live_broadcast_url, Comics
+from API import Comics_info, recommend, video_Share
+from API import add_coin, video_click, video_heartbeat
 '''
 实现的功能
 1.获取视频信息
@@ -118,12 +120,12 @@ def comics_checkin_info(headers):
 
 
 # 获取推荐视频列表
-def video_suggest(num):
-    params = {'tid': 23, 'order': 'new'}
+def video_suggest(ps, pn):
+    params = {'ps': ps, 'pn': pn}
     rep = requests.get(recommend, params=params).json()
     if rep['code'] == 0:
         vdict = {}
-        vlist = rep['list']
+        vlist = rep['data']['list']
         for index, item in enumerate(vlist):
             # 将视频主要信息保存到字典里
             v = {'aid': item['aid'], 'title': item['title']}
@@ -150,7 +152,7 @@ def give_coin(p, want_coin_num, headers, csrf, coinnum=1, select_like=0):
             rep = requests.post(add_coin, headers=headers, data=data).json()
             if rep['code'] == 0:
                 # 投币成功
-                print('给[%s]投币成功🎉🎉' % item['title'])
+                print(f'给{item.get("title")}投币成功🎉🎉')
                 list.update({index: {'status': True, 'title': item['title']}})
                 has_coin_num = has_coin_num + 1  # 投币次数加 1
             else:
@@ -255,13 +257,15 @@ def start():
         user = get_user_info(headers)
         if user['status']:
             userInfo = user['userInfo']
-            content = '等级：lv%d\n硬币：%d\n经验：%s\n' % (
-                userInfo['level'], userInfo['coins'], userInfo['level_exp'])
+            my_level = userInfo['level']
+            my_coins = userInfo['coins']
+            my_exp = userInfo['level_exp']
+            content = f'等级：lv{my_level}\n硬币：{my_coins}\n经验：{my_exp}\n'
             print(content)
             # 配置需观看的视频 BV 号
             bvid = os.getenv('bvid', 'BV1if4y1g7Qp')
-            if bvid and want_watch[cindex] == '1':
-                # 如果 bvid 存在,且 is_watch 不是 '0'
+            if want_watch[cindex] == '1':
+                # 如果 is_watch 不是 '0'
                 # 说明想要看视频
                 print('正在观看视频...')
                 is_watch = watch(bvid, headers, uid[cindex], csrf[cindex])
@@ -269,16 +273,16 @@ def start():
                 print('不进行观看...')
                 is_watch = False
             # 获取 50 个推荐视频
-            p = video_suggest(50)
+            p = video_suggest(50, 1)
             if p['status']:
                 print('获取 50 个视频成功🎉🎉')
                 # 投币,默认不投币
                 try:
                     wcn = int(want_coin_num[cindex])
-                    print('今日欲投 %d 个硬币' % wcn)
+                    print(f'今日欲投{wcn}个硬币')
                 except (IndexError, ValueError):
                     wcn = 0
-                    print('今日欲投 %d 个硬币' % wcn)
+                    print(f'今日欲投{wcn}个硬币')
                 coin_list = give_coin(p, wcn, headers, csrf[cindex])
                 # 随机分享视频,默认不分享视频
                 try:
