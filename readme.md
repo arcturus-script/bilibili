@@ -15,6 +15,20 @@
 - [x] 每日看视频
 - [x] 多账户支持
 
+### 步骤
+
+1. 点击进入[腾讯云控制台](https://console.cloud.tencent.com/scf/list?rid=1&ns=default)
+2. 点击新建
+
+    [![5gOxG8.png](https://z3.ax1x.com/2021/10/23/5gOxG8.png)](https://imgtu.com/i/5gOxG8)
+3. 自定义创建-函数名称随意-改执行方法为 `index-main`
+
+    [![5gOvPf.png](https://z3.ax1x.com/2021/10/23/5gOvPf.png)](https://imgtu.com/i/5gOvPf)
+
+4. 在线编辑或者本地上传zip包都可以(上传zip包注意不要直接上传github上下载的，因为解压后代码不在一级目录下)
+
+    [![I3xpgP.png](https://z3.ax1x.com/2021/11/08/I3xpgP.png)](https://imgtu.com/i/I3xpgP)
+
 ### 参数
 
 > 需要将参数填写至环境变量处
