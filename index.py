@@ -107,7 +107,7 @@ def comics_checkin(headers):
             }
     elif rep['code'] == 'invalid_argument':
         print('漫画签到失败,因为重复签到了')
-        return {'status': False, 'message': rep['message']}
+        return {'status': False, 'message': rep['msg']}
 
 
 # 查看漫画签到信息
