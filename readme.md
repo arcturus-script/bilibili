@@ -72,6 +72,8 @@
 |  2   |  server 酱  |
 |  3   |  pushplus   |
 
+> 使用 server 酱或 pushplus 需要在环境变量上加上 key
+
 ### 参考资料
 1. [sanshuifeibing/ExampleForSCF](https://github.com/sanshuifeibing/ExampleForSCF)
 2. [kamiyan233/bilibili-helper](https://github.com/kamiyan233/bilibili-helper)
