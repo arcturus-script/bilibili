@@ -18,13 +18,10 @@ from API import add_coin, video_click, video_heartbeat
 '''
 # Cookies
 Cookies = os.getenv('Cookies').split(',')
-# csrf = os.getenv('csrf').split(',')
-# uid = os.getenv('uid').split(',')
-# sid = os.getenv('sid').split(',')
 
-# 正则好像有点 bug (╯▔皿▔)╯
 csrf, uid, sid = [], [], []
 for i in Cookies:
+    i = i + ";"
     csrf.append(re.findall('(?<=bili_jct=)(.+?);', i)[0])
     uid.append(re.findall('(?<=DedeUserID=)(.+?);', i)[0])
     sid.append(re.findall('(?<=sid=)(.+?);', i)[0])
