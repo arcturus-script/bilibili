@@ -87,12 +87,17 @@ class server():
         requests.post(url, params)
 
 
-# pushplus酱推送
+# pushplus 推送
 class pushplus():
     def __init__(self, key):
         self.key = key
 
     def push_message(self, title, content):
         url = 'http://www.pushplus.plus/send'
-        params = {'token': self.key, 'title': title, 'content': content}
+        params = {
+            'token': self.key,
+            'title': title,
+            'content': content,
+            "template": "markdown"
+        }
         requests.post(url, params)
