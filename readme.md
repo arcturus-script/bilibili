@@ -51,6 +51,8 @@
 
 > 手动退出 bilibili 时 cookies 会失效
 
+> 确保 cookies 中不含有 ',' 如果含有，务必将第 20 行代码  Cookies = os.getenv('Cookies').split(',') 里的分割符改成特殊的，否则会报错
+
 #### 企业微信推送必填
 
 |     key      |   description   |
