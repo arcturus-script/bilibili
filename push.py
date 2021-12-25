@@ -99,7 +99,7 @@ class pushplus():
             'content': content,
             "template": "markdown"
         }
-        rep = requests.post(url, params=params)
+        rep = requests.post(url, params=params).json()
         if rep["code"] == 200:
             print("发送消息成功")
         else:
