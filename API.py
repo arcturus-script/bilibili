@@ -17,3 +17,4 @@ add_coin = 'https://api.bilibili.com/x/web-interface/coin/add'
 # bilibili 看视频
 video_click = 'https://api.bilibili.com/x/click-interface/click/web/h5'
 video_heartbeat = 'https://api.bilibili.com/x/click-interface/web/heartbeat'
+

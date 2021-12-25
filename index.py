@@ -252,6 +252,7 @@ def start():
 
         # 获取用户信息
         user = get_user_info(headers)
+        print(user)
         if user['status']:
             userInfo = user['userInfo']
             my_level = userInfo['level']
