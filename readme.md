@@ -73,6 +73,8 @@
 
 > 使用 server 酱或 pushplus 需要在环境变量上加上 key
 
+> server 酱排版目前有点问题 🙃 建议用 pushplus 吧
+
 ### 参考资料
 1. [sanshuifeibing/ExampleForSCF](https://github.com/sanshuifeibing/ExampleForSCF)
 2. [kamiyan233/bilibili-helper](https://github.com/kamiyan233/bilibili-helper)
