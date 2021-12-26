@@ -92,6 +92,7 @@ def live_broadcast_checkin(headers):
 def comics_checkin(headers):
     data = {'platform': 'android'}
     rep = requests.post(Comics, headers=headers, data=data).json()
+    print(rep)
     if rep['code'] == 0:
         print('漫画签到成功🎉🎉')
         p = comics_checkin_info(headers)
@@ -258,7 +259,7 @@ def start():
             my_level = userInfo['level']
             my_coins = userInfo['coins']
             my_exp = userInfo['level_exp']
-            content = f'等级：lv{my_level}\n硬币：{my_coins}\n经验：{my_exp}\n'
+            content = f'等级：lv{my_level}<br/>硬币：{my_coins}<br/>经验：{my_exp}<br/>'
             print(content)
             # 配置需观看的视频 BV 号
             bvid = os.getenv('bvid', 'BV1if4y1g7Qp')
@@ -326,34 +327,32 @@ def start():
 
             # 开始推送
             if is_watch:
-                content = content + '\n观看视频：完成'
+                content = f"{content}<br/>观看视频：完成"
 
             if is_share['status']:
-                content = content + '\n分享视频[%s]：完成' % is_share['msg']
+                content = content + f'<br/>分享视频[{is_share["msg"]}]：完成'
 
             if len(coin_list) != 0:
                 for i in coin_list.values():
                     if i['status']:
-                        content = content + '\n给视频[%s]投币：成功' % i['title']
+                        content = f"{content}<br/>给视频[{i['title']}]投币：成功"
                     else:
-                        content = content + '\n给视频[%s]投币：失败' % i['title']
+                        content = f"{content}<br/>给视频[{i['title']}]投币：失败"
             if cm['status']:
-                content = content + '\n漫画：%s\n连续签到：%d天' % (cm['message'],
-                                                           cm['day_count'])
+                content = f"{content}<br/>漫画：{cm['message']}<br/>连续签到：{cm['day_count']}天"
             else:
-                content = content + '\n漫画未签到,因为：%s' % cm['message']
+                content = f"{content}<br/>漫画未签到,因为：{cm['message']}"
 
             if lb['status']:
                 lb_info = lb['info']
-                content = content + '\n直播签到成功\n今日奖励：%s\n其他：%s' % (
-                    lb_info['raward'], lb_info['specialText'])
+                content = f"{content}<br/>直播签到成功<br/>今日奖励：{lb_info['raward']}<br/>其他：{lb_info['specialText']}"
             else:
-                content = content + '\n直播未签到,因为：%s' % lb['message']
+                content = f"{content}<br/>直播未签到,因为：{lb['message']}"
 
             if push_type == '1':
                 qiye_push_msg(content, userInfo['name'])
             else:
-                msg.append('## %s\n%s\n' % (userInfo['name'], content))
+                msg.append(f"## {userInfo['name']}\n{content}")
         else:
             print('Cookies 失效啦')
             if push_type == '1':
