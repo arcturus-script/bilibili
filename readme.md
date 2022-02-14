@@ -15,6 +15,8 @@
 - [x] 每日看视频
 - [x] 多账户支持
 
+> 这个还可以用，但懒得维护了，可以看这个新的 [签到API](https://github.com/ICE99125/checkin.git)，可以一键部署
+
 ### 步骤
 
 1. 点击进入[腾讯云控制台](https://console.cloud.tencent.com/scf/list?rid=1&ns=default)
