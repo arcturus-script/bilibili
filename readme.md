@@ -73,7 +73,7 @@
 
    [![HzQAEt.png](https://s4.ax1x.com/2022/02/22/HzQAEt.png)](https://imgtu.com/i/HzQAEt)
 
-3. corid
+3. corpid
 
    [![HzMv4K.png](https://s4.ax1x.com/2022/02/22/HzMv4K.png)](https://imgtu.com/i/HzMv4K)
 
