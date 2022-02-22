@@ -19,62 +19,65 @@
 ### 步骤
 
 1. 点击进入[腾讯云控制台](https://console.cloud.tencent.com/scf/list?rid=1&ns=default)
+
 2. 点击新建
 
     [![5gOxG8.png](https://z3.ax1x.com/2021/10/23/5gOxG8.png)](https://imgtu.com/i/5gOxG8)
-3. 自定义创建-函数名称随意-改执行方法为 `index-main`
+    
+3. 从头开始-函数名称随意
 
-    [![5gOvPf.png](https://z3.ax1x.com/2021/10/23/5gOvPf.png)](https://imgtu.com/i/5gOvPf)
+    > 这里选择 python3.6!!! 除非你自己会上传依赖
 
-4. 在线编辑或者本地上传zip包都可以(上传zip包注意不要直接上传github上下载的，因为解压后代码不在一级目录下)
+    [![HzKwz4.png](https://s4.ax1x.com/2022/02/22/HzKwz4.png)](https://imgtu.com/i/HzKwz4)
 
-    [![I3xpgP.png](https://z3.ax1x.com/2021/11/08/I3xpgP.png)](https://imgtu.com/i/I3xpgP)
+4. 改入口函数为 index.main
 
-### 参数
+    [![HznLHP.png](https://s4.ax1x.com/2022/02/22/HznLHP.png)](https://imgtu.com/i/HznLHP)
+    
+5. 改超时时间(如果出现什么 timeout 什么 3 secords 就改，没有也可以不改)
 
-> 需要将参数填写至环境变量处
+    [![Hzum34.png](https://s4.ax1x.com/2022/02/22/Hzum34.png)](https://imgtu.com/i/Hzum34)
+
+6. 顺便把推送服务的密钥也加进去
+
+    [![HzuwDI.png](https://s4.ax1x.com/2022/02/22/HzuwDI.png)](https://imgtu.com/i/HzuwDI)
+
+7. 改配置文件
+
+    [![HzKxyj.png](https://s4.ax1x.com/2022/02/22/HzKxyj.png)](https://imgtu.com/i/HzKxyj)
+
+## push
+
+1. workWechatRobot(企业微信群机器人)
+2. pushplus
+3. workWechat(企业微信)
+4. server
+
+### 环境变量
 
 [![5gTYut.png](https://z3.ax1x.com/2021/10/23/5gTYut.png)](https://imgtu.com/i/5gTYut)
 
-[![5gTMND.png](https://z3.ax1x.com/2021/10/23/5gTMND.png)](https://imgtu.com/i/5gTMND)
+环境变量 key 值与推送类型相同，对应于各个推送的密钥：
 
-|         key         | 类型 |        value        |                            描述                             |
-| :-----------------: | :--: | :-----------------: | :---------------------------------------------------------: |
-|       Cookies       | 必填 |          -          |                     多账户使用 `,` 分割                     |
-|      push_type      | 选填 |       0 1 2 3       |                    推送类型，默认不推送                     |
-|         bid         | 选填 | 默认 `BV1if4y1g7Qp` |                    每日观看视频的 BV 号                     |
-|     want_watch      | 选填 |       0 或 1        |                      是否进行每日观看                       |
-|    want_coin_num    | 选填 |   推荐不多于 5 个   | 每天投多少个硬币<br />因为只有前5个有经验<br />投币视频随机 |
-|   want_share_num    | 选填 |       0 或 1        |                      是否进行视频分享                       |
-| want_comics_checkin | 选填 |       0 或 1        |                      是否进行漫画签到                       |
-|   want_lb_checkin   | 选填 |       0 或 1        |                      是否进行直播签到                       |
-|         key         | 选填 |          -          |                   pushplus、server酱的key                   |
+[![HzQ0bR.png](https://s4.ax1x.com/2022/02/22/HzQ0bR.png)](https://imgtu.com/i/HzQ0bR)
+
+1. pushplus
+2. server
+3. workWechatRobot
+
+企业微信有所不同，需要：
+
+1. agentid
+
+2. corpSecret
+
+   [![HzQAEt.png](https://s4.ax1x.com/2022/02/22/HzQAEt.png)](https://imgtu.com/i/HzQAEt)
+
+3. corid
+
+   [![HzMv4K.png](https://s4.ax1x.com/2022/02/22/HzMv4K.png)](https://imgtu.com/i/HzMv4K)
 
 > 手动退出 bilibili 时 cookies 会失效
-
-> 确保 cookies 中不含有 ',' 如果含有，务必将第 20 行代码  Cookies = os.getenv('Cookies').split(',') 里的分割符改成特殊的，否则会报错
-
-#### 企业微信推送必填
-
-|     key      |   description   |
-| :----------: | :-------------: |
-|   AgentId    |     应用 ID     |
-|    Secret    |    应用密钥     |
-|    Touser    | 不填默认 `@all` |
-| EnterpriseID |     企业 ID     |
-
-#### push_type
-
-| key  | description |
-| :--: | :---------: |
-|  0   | 不使用推送  |
-|  1   |  企业微信   |
-|  2   |  server 酱  |
-|  3   |  pushplus   |
-
-> 使用 server 酱或 pushplus 需要在环境变量上加上 key
-
-> server 酱排版目前有点问题 🙃 建议用 pushplus 吧
 
 ### 参考资料
 1. [sanshuifeibing/ExampleForSCF](https://github.com/sanshuifeibing/ExampleForSCF)
