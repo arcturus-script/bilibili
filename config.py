@@ -3,7 +3,7 @@ config = {
         {
             "cookie": "账号1",
             "options": {
-                "watch": True,  # 美容观看视频
+                "watch": True,  # 每日观看视频
                 "coins": 2,  # 投币个数
                 "share": True,  # 视频分享
                 "comics": True,  # 漫画签到
