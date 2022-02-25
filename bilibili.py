@@ -96,11 +96,6 @@ def handler(fn):
                             },
                             "txt": {"content": lb["raward"]},
                         },
-                        {
-                            "txt": {
-                                "content": lb["specialText"],
-                            }
-                        },
                     ]
                 )
             else:
