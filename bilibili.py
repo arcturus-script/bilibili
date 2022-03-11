@@ -39,6 +39,16 @@ def handler(fn):
                     }
                 }
             )
+        
+        share = res.get("share")
+        if share:
+            content.append(
+                {
+                    "txt": {
+                        "content": f"分享视频: {share}",
+                    }
+                }
+            )
 
         coins = res.get("coins")
         if coins:
