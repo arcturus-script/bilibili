@@ -24,5 +24,5 @@ config = {
         # },
     ],
     "together": True, # 是否合并发送结果, 不写或 True 时合并发送
-    "push": "workWechat", # 推送类型, together 为 True 或者不写时必须有, 否则不推送
+    "push": "qmsg", # 推送类型, together 为 True 或者不写时必须有, 否则不推送
 }
