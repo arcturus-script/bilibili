@@ -63,6 +63,7 @@ def push(type: str, title: str, content):
                 )
             except KeyError as key:
                 print(f"未配置企业微信的 {key}")
+        #qmsg推送
         elif type == "qmsg":
             try:
                 key = os.environ["qmsg"]
