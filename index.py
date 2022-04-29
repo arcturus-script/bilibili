@@ -2,7 +2,6 @@ from bilibili import BiliBili
 from config import config
 from push import push
 
-
 def main(*arg):
     together = config.get("together")
     type = config.get("push")

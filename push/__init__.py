@@ -1,5 +1,6 @@
 from .workWeChat import workWechatRobot, workWechatApp
 from .server import server
+from .qmsg import qmsg
 from .pushplus import pushplus
 
 import os
@@ -62,6 +63,14 @@ def push(type: str, title: str, content):
                 )
             except KeyError as key:
                 print(f"未配置企业微信的 {key}")
+        #qmsg推送
+        elif type == "qmsg":
+            try:
+                key = os.environ["qmsg"]
+                # 这里推送文本消息
+                res = qmsg(key).push_msg(dict2md.dict2md(content))
+            except KeyError:
+                print("未配置 qmsg 酱 的 key")
         else:
             print("未找到相关推送服务")
     except Exception as ex:
