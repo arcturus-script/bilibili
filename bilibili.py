@@ -525,6 +525,7 @@ class BiliBili:
             share = options.get("share")
             comics = options.get("comics")
             lb = options.get("lb")
+            threshold = options.get("threshold", 100)
 
             videos = self.video_suggest()  # 获取热门视频
 
@@ -536,7 +537,8 @@ class BiliBili:
             else:
                 watch_res = None
 
-            if coins:
+            # 当用户的硬币大于阈值时才进行投币
+            if coins and self.coin > threshold:
                 # 获取投币成功的视频标题列表
                 coin_list = self.give_coin(videos, coins)
             else:
