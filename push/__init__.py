@@ -14,6 +14,7 @@ def push(type: str, title: str, content):
     try:
         if type == "pushplus":
             try:
+                # 本地运行修改os.environ["pushplus"]为'你的token'
                 key = os.environ["pushplus"]
 
                 # 这里暂时只推送 html
