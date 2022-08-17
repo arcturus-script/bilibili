@@ -2,6 +2,7 @@ from bilibili import BiliBili
 from config import config
 from push import push
 
+
 def main(*arg):
     together = config.get("together")
     type = config.get("push")
@@ -32,6 +33,7 @@ def main(*arg):
                 push(alone_type, "BiliBili", res)
             else:
                 print("未开启推送")
+
 
 if __name__ == "__main__":
     main()

@@ -1,3 +1,4 @@
+from urllib import response
 import requests as req
 from re import compile
 import time
@@ -39,7 +40,7 @@ def handler(fn):
                     }
                 }
             )
-        
+
         share = res.get("share")
         if share:
             content.append(
@@ -73,7 +74,7 @@ def handler(fn):
                                 "content": "漫画签到",
                             },
                             "txt": {
-                                "content": comics['msg'],
+                                "content": comics["msg"],
                             },
                         },
                         {
@@ -114,9 +115,22 @@ def handler(fn):
                         "h5": {
                             "content": "直播",
                         },
-                        "txt": {"content": lb["msg"]},
+                        "txt": {
+                            "content": lb["msg"],
+                        },
                     }
                 )
+
+        toCoin = res.get("toCoin")
+        if toCoin:
+            content.append(
+                {
+                    "h5": {
+                        "content": "银瓜子兑换硬币",
+                    },
+                    "txt": {"content": toCoin["msg"]},
+                }
+            )
 
         return content
 
@@ -143,6 +157,8 @@ class BiliBiliAPI:
     # 看视频
     VIDEO_CLICK = "https://api.bilibili.com/x/click-interface/click/web/h5"
     VIDEO_HEARTBEAT = "https://api.bilibili.com/x/click-interface/web/heartbeat"
+    # 兑换硬币
+    TO_COIN = "https://api.live.bilibili.com/xlive/revenue/v1/wallet/silver2coin"
 
 
 class BiliBili:
@@ -515,6 +531,27 @@ class BiliBili:
                 "msg": f"观看视频[{video_info['title']}]失败",
             }
 
+    def toCoin(self):
+        resp = req.post(
+            BiliBiliAPI.TO_COIN,
+            headers=self.headers,
+            data={
+                "csrf_token": self.csrf,
+                "csrf": self.csrf,
+            },
+        ).json()
+
+        if resp.get("code"):
+            return {
+                "status": True,
+                "msg": resp.get("message"),
+            }
+        else:
+            return {
+                "status": False,
+                "msg": resp.get("message"),
+            }
+
     @handler
     def start(self, options):
         self.get_user_info()  # 获取用户信息
@@ -526,6 +563,7 @@ class BiliBili:
             comics = options.get("comics")
             lb = options.get("lb")
             threshold = options.get("threshold", 100)
+            toCoin = options.get("toCoin", False)
 
             videos = self.video_suggest()  # 获取热门视频
 
@@ -562,6 +600,12 @@ class BiliBili:
             else:
                 lb_res = None
 
+            if toCoin:
+                # 银瓜子兑换硬币
+                toCoin_res = self.toCoin()
+            else:
+                toCoin_res = None
+
             return {
                 "name": self.name,
                 "level": self.level,
@@ -572,6 +616,7 @@ class BiliBili:
                 "comics": comics_res,
                 "lb": lb_res,
                 "watch": watch_res,
+                "toCoin": toCoin_res,
             }
         else:
             return {
