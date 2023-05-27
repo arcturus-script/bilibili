@@ -120,3 +120,8 @@ def failed(*args, **kwargs):
 def success(*args, **kwargs):
     print("[\033[32msuccess\033[0m] ", end="")
     print(*args, **kwargs)
+
+
+def info(*args, **kwargs):
+    print("[\033[34minfo\033[0m]    ", end="")
+    print(*args, **kwargs)
