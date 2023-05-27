@@ -1,13 +1,14 @@
 import requests as req
 from re import compile
-from tools import handler
+from tools import failed, handler, info, success
+from datetime import datetime
 import time
 
 # 获取视频信息地址
 VIDEO_INFO = "https://api.bilibili.com/x/web-interface/view"
 
 # 获取用户信息
-PERSONAL_INFO = "http://api.bilibili.com/x/space/myinfo"
+PERSONAL_INFO = "https://api.bilibili.com/x/space/myinfo"
 
 # 直播签到
 LIVE_BROADCAST = "https://api.live.bilibili.com/sign/doSign"
@@ -34,6 +35,9 @@ VIDEO_HEARTBEAT = "https://api.bilibili.com/x/click-interface/web/heartbeat"
 
 # 兑换硬币
 TO_COIN = "https://api.live.bilibili.com/xlive/revenue/v1/wallet/silver2coin"
+
+# 获取当日投币情况
+COIN_LOG = " https://api.bilibili.com/x/member/web/coin/log"
 
 
 class BiliBili:
@@ -88,9 +92,9 @@ class BiliBili:
                     "title": data["title"],  # 视频标题
                 }
             else:
-                print(f"获取视频信息失败, 原因: {rep['message']}")
+                failed(f"获取视频信息失败, 原因: {rep['message']}")
         except Exception as ex:
-            print(f"获取视频信息时出错, 原因: {ex}")
+            failed(f"获取视频信息时出错, 原因: {ex}")
 
     # 获取用户信息
     def get_user_info(self):
@@ -108,11 +112,12 @@ class BiliBili:
                 self.coin = data["coins"]  # 硬币数
                 self.exp = f"{current_exp}/{next_exp}"  # 经验
                 self.silence = data["silence"]  # 不知道是什么
-
+                
+                success(f"获取用户信息成功, 用户: {self.name}")
             else:
                 raise Exception(rep["message"])
         except Exception as ex:
-            print(f"获取用户信息时出错, 原因: {ex}")
+            failed(f"获取用户信息时出错, 原因: {ex}")
 
             self.name = "Unkown"
             self.level = "lv0"
@@ -132,7 +137,7 @@ class BiliBili:
                 # 签到成功
                 data = rep["data"]
 
-                print(f"[success] 直播签到: 奖励 {data['text']}")
+                success(f"直播签到: 奖励 {data['text']}")
 
                 return {
                     "raward": data["text"],
@@ -142,7 +147,7 @@ class BiliBili:
                 raise Exception(rep["message"])
 
         except Exception as ex:
-            print(f"[failed] 直播签到 --> {ex}")
+            failed(f"直播签到失败, {ex}")
 
     # 漫画签到
     def comics_checkin(self):
@@ -159,7 +164,7 @@ class BiliBili:
             ).json()
 
             if rep["code"] == 0:
-                print("[success] 漫画签到")
+                success("漫画签到完成")
 
                 result = self.comics_checkin_info()
 
@@ -170,17 +175,17 @@ class BiliBili:
             else:
                 raise Exception(rep.get("msg", "Unknown error"))
         except Exception as ex:
-            print(f"[failed] 漫画签到 --> {ex}")
+            failed(f"漫画签到失败, {ex}")
 
     def comics_checkin_info(self):
         rep = req.post(COMICS_INFO, headers=self.headers).json()
 
         if rep["code"] == 0:
-            print(f"[success] 获取漫画签到信息, 您已经连续签到 {rep['data']['day_count']} 天")
+            success(f"获取漫画签到信息成功, 您已经连续签到 {rep['data']['day_count']} 天")
 
             return rep["data"]["day_count"]
         else:
-            print(f"获取漫画签到信息失败, 原因: {rep['msg']}")
+            failed(f"获取漫画签到信息失败, 原因: {rep['msg']}")
 
     # 获取推荐视频
     @staticmethod
@@ -218,19 +223,24 @@ class BiliBili:
 
             return res
         else:
-            print(f"获取视频推荐列表失败")
+            failed(f"获取视频推荐列表失败")
 
             return [{"bvid": "BV1LS4y1C7Pa"}]
 
     # 投币
     def give_coin(self, videos, per_coin_num=1, select_like=0):
-        coined = 0  # 已经投币数
+        coined = self.getCoinLog()  # 已经投币数
 
         max_coin = self.options.get("coins", 0)
 
         if max_coin == 0:
             return
 
+        surplus = max_coin - coined
+        surplus = 0 if surplus < 0 else surplus
+
+        info(f"还需投币 {surplus} 个")
+        
         coin_videos = []
 
         for video in videos:
@@ -248,16 +258,16 @@ class BiliBili:
 
                 if rep["code"] == 0:
                     # 投币成功
-                    print(f"给[{video['title']}]投币成功")
+                    success(f"给[{video['title']}]投币成功")
 
                     coin_videos.append(video["title"])
 
                     coined += 1  # 投币次数加 1
                 else:
                     # 投币失败
-                    print(f"给[{video['title']}]投币失败, 原因: {rep['message']}")
+                    failed(f"给[{video['title']}]投币失败, 原因: {rep['message']}")
             else:
-                print(f"投币结束, 总共投了 {coined} 个硬币")
+                success(f"投币完成, 今日共投了 {coined} 个硬币")
 
                 break
 
@@ -279,11 +289,11 @@ class BiliBili:
 
             if rep["code"] == 0:
                 # 如果分享成功, 退出循环, 并返回分享的视频名
-                print(f"[success] 分享视频 --> [{video['title']}]")
+                success(f"分享视频完成, [{video['title']}]")
 
                 return video["title"]
             else:
-                print(f"[failed] 分享视频[{video['title']}] --> {rep['message']}")
+                failed(f"分享视频[{video['title']}]失败, {rep['message']}")
 
     # 每日看视频
     def watch(self, bvid):
@@ -339,11 +349,11 @@ class BiliBili:
                     ).json()
 
                     if rep["code"] == 0:
-                        print(f"[success] 观看视频 --> [{video_info['title']}]")
+                        success(f"观看视频完成, [{video_info['title']}]")
 
                         return f"观看视频[{video_info['title']}]成功"
 
-            print(f"[failed] 观看视频 --> [{video_info['title']}]")
+            failed(f"观看视频失败, [{video_info['title']}]")
 
     # 银瓜子兑换银币
     def toCoin(self):
@@ -360,6 +370,35 @@ class BiliBili:
         ).json()
 
         return resp.get("message", "兑换失败")
+
+    def getCoinLog(self):
+        resp = req.get(
+            COIN_LOG,
+            headers=self.headers,
+            params={
+                "csrf": self.csrf,
+                "jsonp": "jsonp",
+            },
+        ).json()
+
+        res = 0
+
+        if resp.get("code") == 0:
+            coin_log = resp.get("data").get("list")
+
+            today = datetime.today().date()
+            for i in coin_log:
+                t = datetime.strptime(i["time"], "%Y-%m-%d %H:%M:%S")
+
+                if t.date() == today:
+                    if i["delta"] < 0:
+                        res += -i["delta"]
+            
+            success(f"获取硬币投递情况成功, 当前已投币 {res} 个")
+        else:
+            failed("获取投币情况失败")
+
+        return res
 
     @handler
     def start(self):
