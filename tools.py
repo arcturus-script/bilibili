@@ -110,3 +110,13 @@ def handler(fn):
         return content
 
     return inner
+
+
+def failed(*args, **kwargs):
+    print("[\033[31mfailed\033[0m]  ", end="")
+    print(*args, **kwargs)
+
+
+def success(*args, **kwargs):
+    print("[\033[32msuccess\033[0m] ", end="")
+    print(*args, **kwargs)
